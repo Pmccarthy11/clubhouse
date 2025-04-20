@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clubhouse</title>
+</head>
+<body>
+  <% if (user) { %>
+    <h2>Welcome, <%= user.first_name %>!</h2>
+    <a href="/new-message">Create a New Message</a> |
+    <a href="/log-out">Log Out</a>
+    <% if (!user.is_member) { %>
+      <p><a href="/join-club">Join the Club</a></p>
+    <% } %>
+  <% } else { %>
+    <a href="/sign-up">Sign Up</a> | <a href="/log-in">Log In</a>
+  <% } %>
+
+  <hr>
+
+  <h1>Message Board</h1>
+
+  <% if (messages.length === 0) { %>
+    <p>No messages yet.</p>
+  <% } else { %>
+    <% messages.forEach(msg => { %>
+      <div style="margin-bottom: 30px;">
+        <h3><%= msg.title %></h3>
+        <p><%= msg.message %></p>
+
+        <% if (user && user.is_member) { %>
+          <p><em>By <%= msg.first_name %> <%= msg.last_name %> on <%= new Date(msg.timestamp).toLocaleString() %></em></p>
+        <% } else { %>
+          <p><em>By Anonymous</em></p>
+        <% } %>
+
+        <% if (user && user.is_admin) { %>
+          <form action="/delete-message/<%= msg.id %>" method="POST" style="display:inline;">
+            <button type="submit" onclick="return confirm('Delete this message?');">Delete</button>
+          </form>
+        <% } %>
+      </div>
+    <% }) %>
+  <% } %>
+</body>
+</html>
